@@ -4,18 +4,18 @@ using namespace std;
 
 void readFile(double**& basis, ifstream& file, int& n) {
 
-	file >> n; // Чтение кол-ва
+	file >> n; // Р§С‚РµРЅРёРµ РєРѕР»-РІР°
 
-	// Инициализация Basis массива
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ Basis РјР°СЃСЃРёРІР°
 	basis = new double* [n];
 	for (int i = 0; i < n; i++)
 		basis[i] = new double[2];
 
-	// Чтение X
+	// Р§С‚РµРЅРёРµ X
 	for (int i = 0; i < n; i++)
 		file >> basis[i][0];
 
-	// Чтение Y
+	// Р§С‚РµРЅРёРµ Y
 	for (int i = 0; i < n; i++)
 		file >> basis[i][1];
 
@@ -23,13 +23,13 @@ void readFile(double**& basis, ifstream& file, int& n) {
 
 void fromBasisToMatr(double** basis, double**& matr, int n, int exclude = -1) {
 
-	if (exclude == -1) { // Ничего не исключать
-		// Инициализация Matr
+	if (exclude == -1) { // РќРёС‡РµРіРѕ РЅРµ РёСЃРєР»СЋС‡Р°С‚СЊ
+		// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ Matr
 		matr = new double* [2 * n - 1];
 		for (int i = 0; i < (2 * n - 1); i++)
 			matr[i] = new double[5];
 
-		// Заполнение Matr
+		// Р—Р°РїРѕР»РЅРµРЅРёРµ Matr
 		int counter = 0;
 		for (int i = 0; i < (2 * n - 1); i += 2) {
 			matr[i][0] = basis[counter][0];
@@ -37,13 +37,13 @@ void fromBasisToMatr(double** basis, double**& matr, int n, int exclude = -1) {
 			counter++;
 		}
 	}
-	else { // Исключить строку exclude
-		// Инициализация Matr
+	else { // РСЃРєР»СЋС‡РёС‚СЊ СЃС‚СЂРѕРєСѓ exclude
+		// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ Matr
 		matr = new double* [2 * (n - 1) - 1];
 		for (int i = 0; i < (2 * (n - 1) - 1); i++)
 			matr[i] = new double[5];
 
-		// Заполнение Matr
+		// Р—Р°РїРѕР»РЅРµРЅРёРµ Matr
 		int counter = 0;
 		for (int i = 0; i < n; i++) {
 			if (i != exclude) {
@@ -55,7 +55,7 @@ void fromBasisToMatr(double** basis, double**& matr, int n, int exclude = -1) {
 	}
 }
 
-bool pp(double**& matr, int n) { //Вычисление РР и проверка рав-ва PP3
+bool pp(double**& matr, int n) { //Р’С‹С‡РёСЃР»РµРЅРёРµ Р Р  Рё РїСЂРѕРІРµСЂРєР° СЂР°РІ-РІР° PP3
 	for (int i = 1; i < (2*n - 2); i += 2) { // PP1
 		matr[i][2] = ((matr[i - 1][1] - matr[i + 1][1]) / (matr[i - 1][0] - matr[i + 1][0]));
 	}
@@ -88,7 +88,7 @@ int main() {
 	double** basis;
 	double** matr;
 	
-	// Чтение файла и заполнение Basis массива
+	// Р§С‚РµРЅРёРµ С„Р°Р№Р»Р° Рё Р·Р°РїРѕР»РЅРµРЅРёРµ Basis РјР°СЃСЃРёРІР°
 	ofstream outf("output.txt");
 	ifstream file("input.txt");
 	readFile(basis, file, n);
@@ -110,30 +110,30 @@ int main() {
 	fromBasisToMatr(basis, matr, n);
 
 	if (pp(matr, n)) {
-		cout << "Нет ошибок!";
+		cout << "РќРµС‚ РѕС€РёР±РѕРє!";
 		outf << "IER=1";
 	}
 		
 	else {
-		cout << "Есть ошибка!" << endl;
+		cout << "Р•СЃС‚СЊ РѕС€РёР±РєР°!" << endl;
 		outf << "IER=0" << endl;
 		double** newMatr;
 		int errorString = searchErrorString(basis, newMatr, n);
 		int x = basis[errorString][0];
-		cout << "Ошибка в X = " << x << endl;
+		cout << "РћС€РёР±РєР° РІ X = " << x << endl;
 
-		// Исправление 
+		// РСЃРїСЂР°РІР»РµРЅРёРµ 
 		double N3 = newMatr[0][1] + newMatr[1][2] * (x - newMatr[0][0]) + newMatr[2][3] * (x - newMatr[0][0]) * (x - newMatr[2][0]) +
 			newMatr[3][4] * (x - newMatr[0][0]) * (x - newMatr[2][0]) * (x - newMatr[4][0]);
-		basis[errorString][1] = N3; // Записываем в исходный массив правильное значение
-		cout << "При X = " << x << " должно быть значение: " << N3;
+		basis[errorString][1] = N3; // Р—Р°РїРёСЃС‹РІР°РµРј РІ РёСЃС…РѕРґРЅС‹Р№ РјР°СЃСЃРёРІ РїСЂР°РІРёР»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ
+		cout << "РџСЂРё X = " << x << " РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ Р·РЅР°С‡РµРЅРёРµ: " << N3;
 
-		// Вывод в файл
+		// Р’С‹РІРѕРґ РІ С„Р°Р№Р»
 		for (int i = 0; i < n; i++) {
 			outf << basis[i][1] << ' ';
 		}
 		outf << endl;
-		outf << "Коэффициенты полинома:" << endl;
+		outf << "РљРѕСЌС„С„РёС†РёРµРЅС‚С‹ РїРѕР»РёРЅРѕРјР°:" << endl;
 		outf << "C0:\t" << newMatr[0][1] << endl;
 		outf << "C1:\t" << newMatr[1][2] << endl;
 		outf << "C2:\t" << newMatr[2][3] << endl;
