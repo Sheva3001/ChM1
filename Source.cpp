@@ -12,8 +12,9 @@ void readFile(double**& basis, ifstream& file, int& n) {
 		basis[i] = new double[2];
 
 	// Чтение X
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i < n; i++) {
 		file >> basis[i][0];
+	}
 
 	// Чтение Y
 	for (int i = 0; i < n; i++)
@@ -119,12 +120,23 @@ int main() {
 		outf << "IER=0" << endl;
 		double** newMatr;
 		int errorString = searchErrorString(basis, newMatr, n);
-		int x = basis[errorString][0];
+		double x = basis[errorString][0];
 		cout << "Ошибка в X = " << x << endl;
 
 		// Исправление 
 		double N3 = newMatr[0][1] + newMatr[1][2] * (x - newMatr[0][0]) + newMatr[2][3] * (x - newMatr[0][0]) * (x - newMatr[2][0]) +
 			newMatr[3][4] * (x - newMatr[0][0]) * (x - newMatr[2][0]) * (x - newMatr[4][0]);
+
+		double C0 = newMatr[0][1] - newMatr[0][0] * newMatr[1][2] + newMatr[0][0] * newMatr[2][0] * newMatr[2][3] -
+			newMatr[0][0] * newMatr[2][0] * newMatr[4][0] * newMatr[3][4];
+
+		double C1 = newMatr[1][2] - (newMatr[0][0] + newMatr[2][0]) * newMatr[2][3] + (newMatr[0][0] * newMatr[2][0] - (newMatr[0][0] + newMatr[2][0]) * newMatr[4][0]) *
+			newMatr[3][4];
+
+		double C2 = newMatr[2][3] - (newMatr[0][0] + newMatr[2][0] + newMatr[4][0]) * newMatr[3][4];
+
+		double C3 = newMatr[3][4];
+
 		basis[errorString][1] = N3; // Записываем в исходный массив правильное значение
 		cout << "При X = " << x << " должно быть значение: " << N3;
 
@@ -134,10 +146,10 @@ int main() {
 		}
 		outf << endl;
 		outf << "Коэффициенты полинома:" << endl;
-		outf << "C0:\t" << newMatr[0][1] << endl;
-		outf << "C1:\t" << newMatr[1][2] << endl;
-		outf << "C2:\t" << newMatr[2][3] << endl;
-		outf << "C3:\t" << newMatr[3][4] << endl;
+		outf << "C0:\t" << C0 << endl;
+		outf << "C1:\t" << C1 << endl;
+		outf << "C2:\t" << C2 << endl;
+		outf << "C3:\t" << C3 << endl;
 
 	}
 	return 0;
